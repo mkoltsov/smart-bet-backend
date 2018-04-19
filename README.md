@@ -1,5 +1,4 @@
-# arcana-assessment
-javascript/web3/node assessment for arcana
+javascript/web3/node
 
 NOTE:  this was developed with Solidity 0.4.8.  it should still work with later versions.
 
