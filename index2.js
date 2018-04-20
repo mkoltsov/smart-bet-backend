@@ -21,7 +21,7 @@ const testNet = "https://kovan.infura.io/NE4uxmvJ4w8YJnkRVKyf";
 const mainNet = "https://rinkeby.infura.io/CuYY8YS1KLElUre64VDX";
 const otherNet = "https://kovan.infura.io/k7Ia1ut0QEiHPVXo3JhW";
 
-var cnt = 7;
+var cnt = 12;
 
 /* connect to kovan and main networks */
 var testEVM = new Web3(new Web3.providers.HttpProvider(testNet));
@@ -121,6 +121,7 @@ app.post(pfx + '/post', function (req, res) {
         res.status(400).json({"error": "missing data elements"});
     }
 
+    console.log(1);
 
     var raw = {
         "nonce": "0x0"+cnt.toString(),
@@ -132,13 +133,17 @@ app.post(pfx + '/post', function (req, res) {
         "chainId": 4
     };
 
-    var privateKey = Buffer.from("a91a59bcb66ed8a1019d3c5022a69b8f020e5f5c6bef501f2c5f7e5fea4a374a", 'hex');
+    console.log(1);
 
+    var privateKey = Buffer.from("a91a59bcb66ed8a1019d3c5022a69b8f020e5f5c6bef501f2c5f7e5fea4a374a", 'hex');
+    console.log(2);
     var tx = new Tx(raw);
     tx.sign(privateKey);
-
+    console.log(3);
     var serializedTx = '0x' + tx.serialize().toString('hex');
+    console.log(4);
     mainEVM.eth.sendSignedTransaction(serializedTx);
+    console.log(5);
     cnt++;
     //
     // // get the contract from the request
