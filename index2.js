@@ -123,13 +123,15 @@ app.post(pfx + '/post', function (req, res) {
 
     console.log(req.body.amount);
 
+    var nonce = otherEVM.eth.getTransactionCount(address) + 100000;
+
     var raw = {
-        "nonce": "0x0a",
+        "nonce": nonce,
         "gasPrice": "0x09502f9000",
         "gasLimit": "0x027100",
         "to": "0x23964e7bda04c0e05fc448a00a3c8e21b2635416",
         "value": "0x00",
-        "data": "0xa9059cbb00000000000000000000000044a25d7c779bca44cd20b9a7698a2c4ec406c5ab0000000000000000000000000000000000000000000000000000000000000007",
+        "data": "0xa9059cbb00000000000000000000000044a25d7c779bca44cd20b9a7698a2c4ec406c5ab000000000000000000000000000000000000000000000000000000000000000"+req.body.amount,
         "chainId": 4
     };
 
