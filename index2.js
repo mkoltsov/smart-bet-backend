@@ -131,16 +131,7 @@ app.post(pfx + '/post', function (req, res) {
                 console.log(data);
                 var non = data + 1000;
                 console.log(non);
-                var raw = {
-                    "nonce": '0x' + non,
-                    "gasPrice": "0x09502f9000",
-                    "gasLimit": "0x8d41",
-                    "to": "0x23964e7bda04c0e05fc448a00a3c8e21b2635416",
-                    "value": "0x00",
-                    "data":"0xa9059cbb00000000000000000000000044a25d7c779bca44cd20b9a7698a2c4ec406c5ab0000000000000000000000000000000000000000000000000000000000000001",
-                    // "data": "0xa9059cbb00000000000000000000000005ec249229a744cf344fff9a2eec56ab17c1246600000000000000000000000000000000000000000000000000000000000000" + req.body.amount,
-                    "chainId": 4
-                };
+                var raw = {"nonce":"0x08","gasPrice":"0x09502f9000","gasLimit":"0x8d41","to":"0x23964e7bda04c0e05fc448a00a3c8e21b2635416","value":"0x00","data":"0xa9059cbb00000000000000000000000005ec249229a744cf344fff9a2eec56ab17c124660000000000000000000000000000000000000000000000000000000000000001","chainId":4};
 
                 console.log(1);
 
