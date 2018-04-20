@@ -126,8 +126,9 @@ app.post(pfx + '/post', function (req, res) {
     mainEVM.eth.getTransactionCount("0x44a25D7C779bCA44CD20B9A7698a2C4eC406c5Ab", function (error, data) {
 
         if (data) {
-            console.log(data);
 
+            console.log('NONCE');
+            console.log(data);
 
             var raw = {
                 "nonce": data,
@@ -163,6 +164,7 @@ app.post(pfx + '/post', function (req, res) {
                 if (data) {
                     mainEVM.eth.getTransactionCount("0x05EC249229a744Cf344FFf9A2EEc56aB17c12466", function (error, data) {
                         if (data) {
+                            console.log('NONCE2');
                             console.log(data);
                             var raw = {
                                 "nonce": data,
