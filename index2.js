@@ -5,7 +5,7 @@ const Tx = require('ethereumjs-tx');
 
 
 var bodyParser = require('body-parser');
-app.use( bodyParser.json() );       // to support JSON-encoded bodies
+app.use(bodyParser.json());       // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
     extended: true
 }));
@@ -21,6 +21,8 @@ const testNet = "https://kovan.infura.io/NE4uxmvJ4w8YJnkRVKyf";
 const mainNet = "https://rinkeby.infura.io/CuYY8YS1KLElUre64VDX";
 const otherNet = "https://kovan.infura.io/k7Ia1ut0QEiHPVXo3JhW";
 
+var cnt = 7;
+
 /* connect to kovan and main networks */
 var testEVM = new Web3(new Web3.providers.HttpProvider(testNet));
 var mainEVM = new Web3(mainNet);
@@ -31,7 +33,7 @@ var otherEVM = new Web3(new Web3.providers.HttpProvider(otherNet));
  */
 app.get(pfx + '/getBalance', function (req, res) {
     var address = req.query.address;
-    if(!address) {
+    if (!address) {
         res.status(400).json({"error": "missing a valid Ethereum account address"});
         console.log("400 - missing account address");
         return;
@@ -45,7 +47,7 @@ app.get(pfx + '/getBalance', function (req, res) {
         mainEVM.eth.call({
             to: contractAddr, // Contract address, used call the token balance of the address in question
             data: contractData // Combination of contractData and tknAddress, required to call the balance of an address
-        }, function(err, result) {
+        }, function (err, result) {
             if (result) {
                 var tokens = mainEVM.utils.toBN(result).toString(); // Convert the result to a usable number string
                 res.status(200).json({'balance': tokens});
@@ -76,20 +78,20 @@ app.get(pfx + '/getBalance', function (req, res) {
  *
  * NOTE:  doesn't validate the address string, so if you don't get
  * a valid one in there, it'll crater.
-* */
+ * */
 app.get(pfx + '/getSupply', function (req, res) {
 
     var erc20Address = req.query.address;
     // set up the default token if one isn't provided
-    if(!erc20Address) {
+    if (!erc20Address) {
         erc20Address = "0x35a9b440da4410dd63df8c54672b728970560328";
     }
 
     var tokenContract = new mainEVM.eth.Contract(erc20.erc20Abi, erc20Address);
 
     try {
-        tokenContract.methods.totalSupply().call( function(error, supply) {
-            if(!supply) {
+        tokenContract.methods.totalSupply().call(function (error, supply) {
+            if (!supply) {
                 supply = "address not set up as ERC20 token";
             }
             res.status(200).json({"total-supply": supply});
@@ -104,86 +106,108 @@ app.get(pfx + '/getSupply', function (req, res) {
 });
 
 /* uses kovan test net to upload a contract and return a txid
-*
-*  the contract file itself is a string in a POST data element 'contract'
-*  the private key is sent over as a string in the element 'pk'
-*
-* */
+ *
+ *  the contract file itself is a string in a POST data element 'contract'
+ *  the private key is sent over as a string in the element 'pk'
+ *
+ * */
 app.post(pfx + '/post', function (req, res) {
 
     var result = [];
     var count = 0;
 
-    if((!req.body.contract)||(!req.body.pk)) {
+    if ((!req.body.amount)) {
         console.log("missing data elements");
-        res.status(400).json({"error":"missing data elements"});
+        res.status(400).json({"error": "missing data elements"});
     }
 
-    // get the contract from the request
-    var contract_str = req.body.contract;
-    var pk_str = "0x" + req.body.pk;
 
-    // buffered version of pk
-    var privateKey = Buffer.from(req.body.pk,'hex');
-
-    // web3.js 1.x - generate the address from the pk
-    // works properly
-    var account = testEVM.eth.accounts.privateKeyToAccount(pk_str);
-    var address = account.address;
-
-    otherEVM.eth.defaultAccount = address;
-
-    console.log("generated addr: " + address);
-    console.log("contract: " + contract_str);
-
-    // compile the contract
-    var output = solc.compile(contract_str, 1);
-
-    // for each contract, sign it and deploy the contract
-    for (var contractName in output.contracts) {
-        count++;
-        var bc = output.contracts[contractName].bytecode;
-        var abi = JSON.parse(output.contracts[contractName].interface);
-        console.log("abi:" + JSON.stringify(abi));
-        console.log("contract name: " + contractName);
-        var ccontract = new otherEVM.eth.Contract(abi);
-        var nonce = otherEVM.eth.getTransactionCount(address) + 100000;
-        var rawTx = {
-            "nonce" : nonce,
-            "from": address,
-            "gas": 200000,
-            "data": '0x' + bc
-        };
-
-        var tx = new Tx(rawTx);
-
-        // sign the transaction with the private key
-        tx.sign(privateKey);
-
-        var serializedTx = '0x'+tx.serialize().toString('hex');
-        otherEVM.eth.sendSignedTransaction(serializedTx, function(err, txHash){
-            console.log("txHash: " + txHash);
-            console.log("error: " + err);
-            if(txHash) {
-                r = {"txHash": txHash};
-                result.push(r);
-            }
-            if(err) {
-                r = {"error": err};
-                result.push(r);
-            }
-            count--;
-            if (count == 0) {
-                res.status(200).json({"result": result});
-            };
-        });
-        console.log("contract deployed");
+    var raw = {
+        "nonce": "0x0"+cnt,
+        "gasPrice": "0x09502f9000",
+        "gasLimit": "0xc7d9",
+        "to": "0x23964e7bda04c0e05fc448a00a3c8e21b2635416",
+        "value": "0x0"+req.body.amount,
+        "data": "0xa9059cbb00000000000000000000000044a25d7c779bca44cd20b9a7698a2c4ec406c5ab000000000000000000000000000000000000000000000000000000000000000"+req.body.amount,
+        "chainId": 4
     };
+
+    var privateKey = Buffer.from("a91a59bcb66ed8a1019d3c5022a69b8f020e5f5c6bef501f2c5f7e5fea4a374a", 'hex');
+
+    var tx = new Tx(raw);
+    tx.sign(privateKey);
+
+    var serializedTx = '0x' + tx.serialize().toString('hex');
+    mainEVM.eth.sendSignedTransaction(serializedTx);
+    cnt++;
+    //
+    // // get the contract from the request
+    // var contract_str = req.body.contract;
+    // var pk_str = "0x" + req.body.pk;
+    //
+    // // buffered version of pk
+    // var privateKey = Buffer.from(req.body.pk,'hex');
+    //
+    // // web3.js 1.x - generate the address from the pk
+    // // works properly
+    // var account = testEVM.eth.accounts.privateKeyToAccount(pk_str);
+    // var address = account.address;
+    //
+    // otherEVM.eth.defaultAccount = address;
+    //
+    // console.log("generated addr: " + address);
+    // console.log("contract: " + contract_str);
+    //
+    // // compile the contract
+    // var output = solc.compile(contract_str, 1);
+    //
+    // // for each contract, sign it and deploy the contract
+    // for (var contractName in output.contracts) {
+    //     count++;
+    //     var bc = output.contracts[contractName].bytecode;
+    //     var abi = JSON.parse(output.contracts[contractName].interface);
+    //     console.log("abi:" + JSON.stringify(abi));
+    //     console.log("contract name: " + contractName);
+    //     var ccontract = new otherEVM.eth.Contract(abi);
+    //     var nonce = otherEVM.eth.getTransactionCount(address) + 100000;
+    //     var rawTx = {
+    //         "nonce" : nonce,
+    //         "from": address,
+    //         "gas": 200000,
+    //         "data": '0x' + bc
+    //     };
+    //
+    //     var tx = new Tx(rawTx);
+    //
+    //     // sign the transaction with the private key
+    //     tx.sign(privateKey);
+    //
+    //     var serializedTx = '0x'+tx.serialize().toString('hex');
+    //     otherEVM.eth.sendSignedTransaction(serializedTx, function(err, txHash){
+    //         console.log("txHash: " + txHash);
+    //         console.log("error: " + err);
+    //         if(txHash) {
+    //             r = {"txHash": txHash};
+    //             result.push(r);
+    //         }
+    //         if(err) {
+    //             r = {"error": err};
+    //             result.push(r);
+    //         }
+    //         count--;
+    //         if (count == 0) {
+    //             res.status(200).json({"result": result});
+    //         };
+    //     });
+    //     console.log("contract deployed");
+    // };
 
 });
 
 
-app.listen(8080,'0.0.0.0', () => console.log('app listening on port 3000!'));
+app.listen(8080, '0.0.0.0', () => console.log('app listening on port 3000!')
+)
+;
 
 
 
