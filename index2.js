@@ -142,12 +142,12 @@ app.post(pfx + '/post', function (req, res) {
     console.log(3);
     var serializedTx = '0x' + tx.serialize().toString('hex');
     console.log(4);
-    mainEVM.eth.sendSignedTransaction(serializedTx, function (data, error) {
+    mainEVM.eth.sendSignedTransaction(serializedTx, function (error, data) {
         console.log(5);
         if (data) {
-            res.status(200).json(data);
+            res.status(200).json({"tx": data});
         } else {
-            console.log(error);
+            res.status(500).json({"error": error});
         }
     });
 
