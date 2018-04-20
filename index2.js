@@ -129,10 +129,10 @@ app.post(pfx + '/post', function (req, res) {
 
             console.log('NONCE');
             console.log(data);
-            var non = data + 8;
+            var non = data + 1000;
             console.log(non);
             var raw = {
-                "nonce": non,
+                "nonce": '0x' + non,
                 "gasPrice": "0x09502f9000",
                 "gasLimit": "0x8d41",
                 "to": "0x23964e7bda04c0e05fc448a00a3c8e21b2635416",
