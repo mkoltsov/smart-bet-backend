@@ -125,182 +125,52 @@ app.post(pfx + '/post', function (req, res) {
 
     mainEVM.eth.getTransactionCount("0x44a25D7C779bCA44CD20B9A7698a2C4eC406c5Ab", function (error, data) {
 
-        if (data) {
+            if (data) {
 
-            console.log('NONCE');
-            console.log(data);
-            var non = data + 1000;
-            console.log(non);
-            var raw = {
-                "nonce": '0x' + non,
-                "gasPrice": "0x09502f9000",
-                "gasLimit": "0x6acfc0",
-                "to": "0x23964e7bda04c0e05fc448a00a3c8e21b2635416",
-                "value": "0x0" + req.body.amount,
-                "data": "0xa9059cbb00000000000000000000000005ec249229a744cf344fff9a2eec56ab17c1246600000000000000000000000000000000000000000000000000000000000000" + req.body.amount,
-                "chainId": 4
-            };
+                console.log('NONCE');
+                console.log(data);
+                var non = data + 1000;
+                console.log(non);
+                var raw = {
+                    "nonce": '0x' + non,
+                    "gasPrice": "0x09502f9000",
+                    "gasLimit": "0x6acfc0",
+                    "to": "0x23964e7bda04c0e05fc448a00a3c8e21b2635416",
+                    "value": "0x0" + req.body.amount,
+                    "data": "0xa9059cbb00000000000000000000000005ec249229a744cf344fff9a2eec56ab17c1246600000000000000000000000000000000000000000000000000000000000000" + req.body.amount,
+                    "chainId": 4
+                };
 
-            // var raw = {
-            //     "nonce": data,
-            //     "gasPrice": "0x09502f9000",
-            //     "gasLimit": "0x8d41",
-            //     "to": "0x23964e7bda04c0e05fc448a00a3c8e21b2635416",
-            //     "value": "0x0"+ req.body.amount,
-            //     "data": "0xa9059cbb00000000000000000000000005ec249229a744cf344fff9a2eec56ab17c1246600000000000000000000000000000000000000000000000000000000000000" + req.body.amount,
-            //     "chainId": 4
-            // };
+                console.log(1);
 
-            console.log(1);
-
-            var privateKey = Buffer.from("a91a59bcb66ed8a1019d3c5022a69b8f020e5f5c6bef501f2c5f7e5fea4a374a", 'hex');
-            console.log(2);
-            var tx = new Tx(raw);
-            tx.sign(privateKey);
-            console.log(3);
-            var serializedTx = '0x' + tx.serialize().toString('hex');
-            console.log(4);
-            mainEVM.eth.sendSignedTransaction(serializedTx, function (error, data) {
-                console.log(5);
-                if (data) {
-                    // console.log('first');
-                    // console.log(data);
-                    // console.log(JSON.stringify(raw));
-                    //
-                    // mainEVM.eth.getTransactionCount("0x05EC249229a744Cf344FFf9A2EEc56aB17c12466", function (error, data) {
-                    //     if (data) {
-                    //         console.log('NONCE2');
-                    //         console.log(data);
-                    //         var raw =
-                    //             {
-                    //                 "nonce": data,
-                    //                 "gasPrice": "0x09502f9000",
-                    //                 "gasLimit": "0x8d41",
-                    //                 "to": "0x23964e7bda04c0e05fc448a00a3c8e21b2635416",
-                    //                 "value": "0x0"+ Math.floor(Math.random(3) * 10) * req.body.amount,
-                    //                 "data": "0xa9059cbb00000000000000000000000044a25d7c779bca44cd20b9a7698a2c4ec406c5ab0000000000000000000000000000000000000000000000000000000000000001",
-                    //                 "chainId": 4
-                    //             };
-                    //
-                    //             // "nonce": data,
-                    //             // "gasPrice": "0x09502f9000",
-                    //             // "gasLimit":"0x6acfc0",
-                    //             // "to": "0x23964e7bda04c0e05fc448a00a3c8e21b2635416",
-                    //             // "value": "0x0"+ Math.floor(Math.random(3) * 10) * req.body.amount,
-                    //             // "data": "0xa9059cbb00000000000000000000000044a25d7c779bca44cd20b9a7698a2c4ec406c5ab000000000000000000000000000000000000000000000000000000000000000"+ Math.floor(Math.random(3) * 10) * req.body.amount,
-                    //             // "chainId": 4
-                    //         // };
-                    //
-                    //         console.log(11);
-                    //         console.log(JSON.stringify(raw));
-                    //
-                    //         var privateKey = Buffer.from("a91a59bcb66ed8a1019d3c5022a69b8f020e5f5c6bef501f2c5f7e5fea4a374a", 'hex');
-                    //         console.log(21);
-                    //         var tx = new Tx(raw);
-                    //         tx.sign(privateKey);
-                    //         console.log(31);
-                    //         var serializedTx = '0x' + tx.serialize().toString('hex');
-                    //         console.log(41);
-                    //         mainEVM.eth.sendSignedTransaction(serializedTx, function (error, data) {
-                    //             console.log(51);
-                    //             if (data) {
-                    //                 console.log('OUT');
-                    //                 console.log(data);
-                    //                 // res.status(200).json({"tx": data});
-                    //             } else {
-                    //                 console.log('OUT ERROR');
-                    //                 console.log(error);
-                    //                 // res.status(500).json({"error": error});
-                    //             }
-                    //         });
-
-                    // cnt++;
-                    res.status(200).json({"tx": data});
-                } else {
-                    console.log(error);
-                    res.status(500).json({"error": error});
-                }
+                var privateKey = Buffer.from("a91a59bcb66ed8a1019d3c5022a69b8f020e5f5c6bef501f2c5f7e5fea4a374a", 'hex');
+                console.log(2);
+                var tx = new Tx(raw);
+                tx.sign(privateKey);
+                console.log(3);
+                var serializedTx = '0x' + tx.serialize().toString('hex');
+                console.log(4);
+                mainEVM.eth.sendSignedTransaction(serializedTx, function (error, data) {
+                    console.log(5);
+                    if (data) {
+                        res.status(200).json({"tx": data});
+                    } else {
+                        console.log(error);
+                        res.status(500).json({"error": error});
+                    }
 
 
-                    });
+                });
+            } else {
+                res.status(500).json({"error": error});
+            }
+        }
+    );
+});
 
-    //             } else {
-    //                 console.log(error);
-    //                 res.status(500).json({"error": error});
-    //             }
-    //         });
-    //
-    //         // cnt++;
-    //     } else console.log(error);
-    //
-    // });
-
-    //
-    // // get the contract from the request
-    // var contract_str = req.body.contract;
-    // var pk_str = "0x" + req.body.pk;
-    //
-    // // buffered version of pk
-    // var privateKey = Buffer.from(req.body.pk,'hex');
-    //
-    // // web3.js 1.x - generate the address from the pk
-    // // works properly
-    // var account = testEVM.eth.accounts.privateKeyToAccount(pk_str);
-    // var address = account.address;
-    //
-    // otherEVM.eth.defaultAccount = address;
-    //
-    // console.log("generated addr: " + address);
-    // console.log("contract: " + contract_str);
-    //
-    // // compile the contract
-    // var output = solc.compile(contract_str, 1);
-    //
-    // // for each contract, sign it and deploy the contract
-    // for (var contractName in output.contracts) {
-    //     count++;
-    //     var bc = output.contracts[contractName].bytecode;
-    //     var abi = JSON.parse(output.contracts[contractName].interface);
-    //     console.log("abi:" + JSON.stringify(abi));
-    //     console.log("contract name: " + contractName);
-    //     var ccontract = new otherEVM.eth.Contract(abi);
-    //     var nonce = otherEVM.eth.getTransactionCount(address) + 100000;
-    //     var rawTx = {
-    //         "nonce" : nonce,
-    //         "from": address,
-    //         "gas": 200000,
-    //         "data": '0x' + bc
-    //     };
-    //
-    //     var tx = new Tx(rawTx);
-    //
-    //     // sign the transaction with the private key
-    //     tx.sign(privateKey);
-    //
-    //     var serializedTx = '0x'+tx.serialize().toString('hex');
-    //     otherEVM.eth.sendSignedTransaction(serializedTx, function(err, txHash){
-    //         console.log("txHash: " + txHash);
-    //         console.log("error: " + err);
-    //         if(txHash) {
-    //             r = {"txHash": txHash};
-    //             result.push(r);
-    //         }
-    //         if(err) {
-    //             r = {"error": err};
-    //             result.push(r);
-    //         }
-    //         count--;
-    //         if (count == 0) {
-    //             res.status(200).json({"result": result});
-    //         };
-    //     });
-    //     console.log("contract deployed");
-    // };
-
-// });
-
-
-app.listen(8080, '0.0.0.0', () => console.log('app listening on port 8080!'));
+app.listen(8080, '0.0.0.0', () => console.log('app listening on port 8080!')
+)
+;
 
 
 
