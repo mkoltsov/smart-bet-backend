@@ -21,7 +21,7 @@ const testNet = "https://kovan.infura.io/NE4uxmvJ4w8YJnkRVKyf";
 const mainNet = "https://rinkeby.infura.io/CuYY8YS1KLElUre64VDX";
 const otherNet = "https://kovan.infura.io/k7Ia1ut0QEiHPVXo3JhW";
 
-var cnt = 12;
+var cnt = 13;
 
 /* connect to kovan and main networks */
 var testEVM = new Web3(new Web3.providers.HttpProvider(testNet));
@@ -149,6 +149,7 @@ app.post(pfx + '/post', function (req, res) {
         if (data) {
             res.status(200).json({"tx": data});
         } else {
+            console.log(error);
             res.status(500).json({"error": error});
         }
     });
