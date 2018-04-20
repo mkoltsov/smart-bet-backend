@@ -147,7 +147,7 @@ app.post(pfx + '/post', function (req, res) {
         if (data) {
             res.status(200).json(data);
         } else {
-            log.err(error);
+            console.log(error);
         }
     });
 
