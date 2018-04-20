@@ -142,9 +142,17 @@ app.post(pfx + '/post', function (req, res) {
     console.log(3);
     var serializedTx = '0x' + tx.serialize().toString('hex');
     console.log(4);
-    mainEVM.eth.sendSignedTransaction(serializedTx);
-    console.log(5);
+    mainEVM.eth.sendSignedTransaction(serializedTx, function (data, error) {
+        console.log(5);
+        if (data) {
+            res.status(200).json(data);
+        } else {
+            log.err(error);
+        }
+    });
+
     cnt++;
+
     //
     // // get the contract from the request
     // var contract_str = req.body.contract;
