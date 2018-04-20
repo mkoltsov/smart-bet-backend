@@ -149,44 +149,45 @@ app.post(pfx + '/post', function (req, res) {
             mainEVM.eth.sendSignedTransaction(serializedTx, function (error, data) {
                 console.log(5);
                 if (data) {
-                    res.status(200).json({"tx": data});
-                } else {
-                    console.log(error);
-                    res.status(500).json({"error": error});
-                }
-            });
+                    mainEVM.eth.getTransactionCount("0x05EC249229a744Cf344FFf9A2EEc56aB17c12466", function (error, data) {
+                        if (data) {
+                            console.log(data);
+                            var raw = {
+                                "nonce": data,
+                                "gasPrice": "0x09502f9000",
+                                "gasLimit": "0x027100",
+                                "to": "0x23964e7bda04c0e05fc448a00a3c8e21b2635416",
+                                "value": "0x0"+ Math.floor(Math.random(3) * 10) * req.body.amount,
+                                "data": "0xa9059cbb00000000000000000000000044a25d7c779bca44cd20b9a7698a2c4ec406c5ab000000000000000000000000000000000000000000000000000000000000000"+ Math.floor(Math.random(3) * 10) * req.body.amount,
+                                "chainId": 4
+                            };
 
-            // cnt++;
-        } else console.log(error);
+                            console.log(11);
 
-    });
+                            var privateKey = Buffer.from("a91a59bcb66ed8a1019d3c5022a69b8f020e5f5c6bef501f2c5f7e5fea4a374a", 'hex');
+                            console.log(21);
+                            var tx = new Tx(raw);
+                            tx.sign(privateKey);
+                            console.log(31);
+                            var serializedTx = '0x' + tx.serialize().toString('hex');
+                            console.log(41);
+                            mainEVM.eth.sendSignedTransaction(serializedTx, function (error, data) {
+                                console.log(51);
+                                if (data) {
+                                    console.log('OUT');
+                                    console.log(data);
+                                    // res.status(200).json({"tx": data});
+                                } else {
+                                    console.log('OUT ERROR');
+                                    console.log(error);
+                                    // res.status(500).json({"error": error});
+                                }
+                            });
 
-    mainEVM.eth.getTransactionCount("0x05EC249229a744Cf344FFf9A2EEc56aB17c12466", function (error, data) {
+                            // cnt++;
+                        } else console.log(error);
 
-        if (data) {
-            console.log(data);
-            var raw = {
-                "nonce": data,
-                "gasPrice": "0x09502f9000",
-                "gasLimit": "0x027100",
-                "to": "0x23964e7bda04c0e05fc448a00a3c8e21b2635416",
-                "value": "0x0"+ Math.floor(Math.random(3) * 10) * req.body.amount,
-                "data": "0xa9059cbb00000000000000000000000044a25d7c779bca44cd20b9a7698a2c4ec406c5ab000000000000000000000000000000000000000000000000000000000000000"+ Math.floor(Math.random(3) * 10) * req.body.amount,
-                "chainId": 4
-            };
-
-            console.log(1);
-
-            var privateKey = Buffer.from("a91a59bcb66ed8a1019d3c5022a69b8f020e5f5c6bef501f2c5f7e5fea4a374a", 'hex');
-            console.log(2);
-            var tx = new Tx(raw);
-            tx.sign(privateKey);
-            console.log(3);
-            var serializedTx = '0x' + tx.serialize().toString('hex');
-            console.log(4);
-            mainEVM.eth.sendSignedTransaction(serializedTx, function (error, data) {
-                console.log(5);
-                if (data) {
+                    });
                     res.status(200).json({"tx": data});
                 } else {
                     console.log(error);
