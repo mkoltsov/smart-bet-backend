@@ -123,38 +123,45 @@ app.post(pfx + '/post', function (req, res) {
 
     console.log(req.body.amount);
 
-    var nonce = otherEVM.eth.getTransactionCount("0x05EC249229a744Cf344FFf9A2EEc56aB17c12466") + 100000;
+    mainEVM.eth.getTransactionCount("0x05EC249229a744Cf344FFf9A2EEc56aB17c12466", function (error, data) {
 
-    var raw = {
-        "nonce": nonce,
-        "gasPrice": "0x09502f9000",
-        "gasLimit": "0x027100",
-        "to": "0x23964e7bda04c0e05fc448a00a3c8e21b2635416",
-        "value": "0x00",
-        "data": "0xa9059cbb00000000000000000000000044a25d7c779bca44cd20b9a7698a2c4ec406c5ab000000000000000000000000000000000000000000000000000000000000000"+req.body.amount,
-        "chainId": 4
-    };
-
-    console.log(1);
-
-    var privateKey = Buffer.from("a91a59bcb66ed8a1019d3c5022a69b8f020e5f5c6bef501f2c5f7e5fea4a374a", 'hex');
-    console.log(2);
-    var tx = new Tx(raw);
-    tx.sign(privateKey);
-    console.log(3);
-    var serializedTx = '0x' + tx.serialize().toString('hex');
-    console.log(4);
-    mainEVM.eth.sendSignedTransaction(serializedTx, function (error, data) {
-        console.log(5);
         if (data) {
-            res.status(200).json({"tx": data});
-        } else {
-            console.log(error);
-            res.status(500).json({"error": error});
-        }
+            console.log(data);
+            var raw = {
+                "nonce": data,
+                "gasPrice": "0x09502f9000",
+                "gasLimit": "0x027100",
+                "to": "0x23964e7bda04c0e05fc448a00a3c8e21b2635416",
+                "value": "0x00",
+                "data": "0xa9059cbb00000000000000000000000044a25d7c779bca44cd20b9a7698a2c4ec406c5ab000000000000000000000000000000000000000000000000000000000000000"+req.body.amount,
+                "chainId": 4
+            };
+
+            console.log(1);
+
+            var privateKey = Buffer.from("a91a59bcb66ed8a1019d3c5022a69b8f020e5f5c6bef501f2c5f7e5fea4a374a", 'hex');
+            console.log(2);
+            var tx = new Tx(raw);
+            tx.sign(privateKey);
+            console.log(3);
+            var serializedTx = '0x' + tx.serialize().toString('hex');
+            console.log(4);
+            mainEVM.eth.sendSignedTransaction(serializedTx, function (error, data) {
+                console.log(5);
+                if (data) {
+                    res.status(200).json({"tx": data});
+                } else {
+                    console.log(error);
+                    res.status(500).json({"error": error});
+                }
+            });
+
+            cnt++;
+        } else console.log(error);
+
     });
 
-    cnt++;
+
 
     //
     // // get the contract from the request
