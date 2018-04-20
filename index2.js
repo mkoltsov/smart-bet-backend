@@ -121,7 +121,7 @@ app.post(pfx + '/post', function (req, res) {
         res.status(400).json({"error": "missing data elements"});
     }
 
-    console.log(1);
+    console.log(req.body.amount);
 
     var raw = {
         "nonce": "0x0"+cnt.toString(),
