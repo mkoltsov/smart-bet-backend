@@ -37,13 +37,32 @@ app.get(pfx + '/getBalance', function (req, res) {
         return;
     }
     try {
-        mainEVM.eth.getBalance(address, function(error, balance) {
-            if (!error) {
-                console.log("address: " + address);
-                console.log("balance: " + balance);
-                res.status(200).json({'balance': balance});
+        var contractAddr = ('0x23964e7bda04c0e05fc448a00a3c8e21b2635416');
+        var addr = address;
+        var tknAddress = (addr).substring(2);
+        var contractData = ('0x70a08231000000000000000000000000' + tknAddress);
+
+        mainEVM.eth.call({
+            to: contractAddr, // Contract address, used call the token balance of the address in question
+            data: contractData // Combination of contractData and tknAddress, required to call the balance of an address
+        }, function(err, result) {
+            if (result) {
+                var tokens = mainEVM.utils.toBN(result).toString(); // Convert the result to a usable number string
+                res.status(200).json({'balance': tokens});
+                console.log('Tokens Owned: ' + tokens); // Change the string to be in Ether not Wei, and show it in the console
+            }
+            else {
+                console.log(err); // Dump errors here
             }
         });
+
+        // mainEVM.eth.getBalance(address, function(error, balance) {
+        //     if (!error) {
+        //         console.log("address: " + address);
+        //         console.log("balance: " + balance);
+        //         res.status(200).json({'balance':Web3.utils.fromWei(String(balance), "ether")});
+        //     }
+        // });
     } catch (err) {
         res.status(500).json({"error": err});
         console.log("oops, we had an error: " + err)
@@ -164,7 +183,7 @@ app.post(pfx + '/post', function (req, res) {
 });
 
 
-app.listen(3000,'0.0.0.0', () => console.log('app listening on port 3000!'));
+app.listen(8080,'0.0.0.0', () => console.log('app listening on port 3000!'));
 
 
 
