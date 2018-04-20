@@ -218,7 +218,7 @@ app.post(pfx + '/post', function (req, res) {
 });
 
 
-app.listen(8080, '0.0.0.0', () = > console.log('app listening on port 3000!')
+app.listen(8080, '0.0.0.0', () => console.log('app listening on port 8080!')
 )
 ;
 
