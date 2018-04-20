@@ -123,7 +123,7 @@ app.post(pfx + '/post', function (req, res) {
 
     console.log(req.body.amount);
 
-    var nonce = otherEVM.eth.getTransactionCount(address) + 100000;
+    var nonce = otherEVM.eth.getTransactionCount("0x05EC249229a744Cf344FFf9A2EEc56aB17c12466") + 100000;
 
     var raw = {
         "nonce": nonce,
